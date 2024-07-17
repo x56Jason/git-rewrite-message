@@ -1,0 +1,62 @@
+#!/bin/perl
+
+$commit_message_file = $ENV{"GIT_COMMIT"};
+
+$title = `git-message --title $commit_message_file`;
+do { $count = chomp $title;} while ($count > 0);
+
+$body = `git-message --body $commit_message_file`;
+do { $count = chomp $body;} while ($count > 0);
+
+$trailers = `git-message --trailer $commit_message_file`;
+do { $count = chomp $trailers;} while ($count > 0);
+
+$title0 = (split /\n/, $title)[0];
+$hash = `git rev-list --no-merges -F --grep="$title0" -n 1 origin/master`;
+
+$upstream_commit = `git rev-parse --short=40 $hash`;
+do { $count = chomp $upstream_commit;} while ($count > 0);
+
+$upstream_commit_short = `git rev-parse --short=12 $hash`;
+do { $count = chomp $upstream_commit_short;} while ($count > 0);
+
+$tag = `git describe --contains $hash 2>/dev/null`;
+if ($tag ne "") {
+	$tag =~ s/~.+$//;
+	do { $count = chomp $tag;} while ($count > 0);
+} else {
+	$tag = "unknown";
+}
+
+$bugzilla = "https://gitee.com/openeuler/issues/BBBBBB";
+
+$reference = "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=$upstream_commit";
+
+$my_username = `git config user.name`;
+do { $count = chomp $my_username;} while ($count > 0);
+$my_email = `git config user.email`;
+do { $count = chomp $my_email;} while ($count > 0);
+$my_signoff="[ $my_username: amend commit log ]\nSigned-off-by: $my_username <$my_email>";
+
+
+#----------- template ---------------------
+
+$template = "$title
+
+mainline inclusion
+from mainline-$tag
+commit $upstream_commit
+category: feature
+bugzilla: $bugzilla
+CVE: NA
+
+Reference: $reference
+
+---------------------------
+
+$body
+
+Intel-SIG: commit $upstream_commit_short $title
+
+$trailers
+$my_signoff";

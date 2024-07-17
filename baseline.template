@@ -1,0 +1,41 @@
+#!/bin/perl
+
+$commit_message_file = $ENV{"GIT_COMMIT"};
+
+$title = `git-message --title $commit_message_file`;
+do { $count = chomp $title;} while ($count > 0);
+
+$body = `git-message --body $commit_message_file`;
+do { $count = chomp $body;} while ($count > 0);
+
+$trailers = `git-message --trailer $commit_message_file`;
+do { $count = chomp $trailers;} while ($count > 0);
+
+$title0 = (split /\n/, $title)[0];
+$hash = `git rev-list --no-merges -F --grep="$title0" -n 1 origin/master`;
+
+$upstream_commit = `git rev-parse --short=40 $hash`;
+do { $count = chomp $upstream_commit;} while ($count > 0);
+
+$upstream_commit_short = `git rev-parse --short=12 $hash`;
+do { $count = chomp $upstream_commit_short;} while ($count > 0);
+
+$my_username = `git config user.name`;
+do { $count = chomp $my_username;} while ($count > 0);
+$my_email = `git config user.email`;
+do { $count = chomp $my_email;} while ($count > 0);
+$my_signoff="[ $my_username: amend commit log ]\nSigned-off-by: $my_username <$my_email>";
+
+
+# template to be eval
+
+$template="$title
+
+commit $upstream_commit upstream.
+
+$body
+
+Intel-SIG: commit $upstream_commit_short $title
+
+$trailers
+$my_signoff";
