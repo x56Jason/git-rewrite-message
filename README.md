@@ -1,17 +1,21 @@
-# <p style="text-align: center;">Rewrite Commit Message</p>
+# Rewrite Commit Message
 
 ## Install
 
     $ make
     $ make install
 
-It will install git-message into ~/bin/, and template files into ~/.config/git-message/
+It will install 'git-message' and 'git-message-rewrite.pl' into ~/bin/, and template files into ~/.config/git-message/.
 
 ## Usage
 
 ### 1. Edit template
 
-First we need to choose a template, and edit corresponding template file in ~/.config/git-message/
+First we need to choose a template, and edit corresponding template file in ~/.config/git-message/.
+
+Currently we support 2 templates: baseline, openeuler.
+
+So we need to edit baseline.template or openeuler.template accordingly.
 
 ### 2. Set template environment variable
 
@@ -28,3 +32,4 @@ or
     $ cd linux
     $ git filter-branch -f --msg-filter 'git-message-rewrite.pl' -- xxxxxxxxxxxx..HEAD
 
+Please note, 'git filter-branch' is a dangerous command, we'd better to backup the repo before run this command, otherwise the repo may be corrupted.
