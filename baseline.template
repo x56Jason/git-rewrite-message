@@ -1,33 +1,32 @@
 #!/bin/perl
 
+sub run_cmd {
+	my ($command) = @_;
+
+	my $cmd_output = `$command 2>/dev/null`;
+	do { $count = chomp $cmd_output;} while ($count > 0);
+
+	return $cmd_output;
+}
+
 $commit_message_file = $ENV{"GIT_COMMIT"};
 
-$title = `git-message --title $commit_message_file`;
-do { $count = chomp $title;} while ($count > 0);
-
-$body = `git-message --body $commit_message_file`;
-do { $count = chomp $body;} while ($count > 0);
-
-$trailers = `git-message --trailer $commit_message_file`;
-do { $count = chomp $trailers;} while ($count > 0);
+$title = run_cmd("git-message --title $commit_message_file");
+$body = run_cmd("git-message --body $commit_message_file");
+$trailers = run_cmd("git-message --trailer $commit_message_file");
 
 $title0 = (split /\n/, $title)[0];
-$hash = `git rev-list --no-merges -F --grep="$title0" -n 1 origin/master`;
+$hash = run_cmd("git rev-list --no-merges -F --grep=\"$title0\" -n 1 origin/master");
 
-$upstream_commit = `git rev-parse --short=40 $hash`;
-do { $count = chomp $upstream_commit;} while ($count > 0);
+$upstream_commit = run_cmd("git rev-parse --short=40 $hash");
+$upstream_commit_short = substr($upstream_commit, 0, 12);
 
-$upstream_commit_short = `git rev-parse --short=12 $hash`;
-do { $count = chomp $upstream_commit_short;} while ($count > 0);
-
-$my_username = `git config user.name`;
-do { $count = chomp $my_username;} while ($count > 0);
-$my_email = `git config user.email`;
-do { $count = chomp $my_email;} while ($count > 0);
+$my_username = run_cmd("git config user.name");
+$my_email = run_cmd("git config user.email");
 $my_signoff="[ $my_username: amend commit log ]\nSigned-off-by: $my_username <$my_email>";
 
 
-# template to be eval
+# -------------------------- template -----------------------
 
 $template="$title
 
