@@ -23,13 +23,8 @@ or
 
     $ export GIT_MSG_TEMPLATE=openeuler
 
-### 3. Rewrite commit message according to baseline template
+### 3. Rewrite commit message according to template
 
     $ cd linux
     $ git filter-branch -f --msg-filter 'git-message-rewrite.pl' -- xxxxxxxxxxxx..HEAD
 
-
-### 4. Rewrite commit message according to openeuler template
-
-    $ cd linux
-    $ git filter-branch -f --msg-filter 'git-message-rewrite.pl' -- xxxxxxxxxxxx..HEAD
