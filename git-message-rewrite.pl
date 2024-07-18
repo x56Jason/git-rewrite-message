@@ -32,7 +32,7 @@ sub save_commit_message {
 
 save_commit_message($ENV{GIT_COMMIT});
 
-# $ARGV[0] is the template name, such as "baseline", "openeuler"
+# $ENV{GIT_MSG_TEMPLATE} is the template name, such as "baseline", "openeuler"
 $template_file = read_file("$ENV{GIT_MSG_TEMPLATE}" . ".template");
 
 eval $template_file;
