@@ -29,7 +29,6 @@ or
 
 ### 3. Rewrite commit message according to template
 
-    $ cd linux
     $ git filter-branch -f --msg-filter 'git-message-rewrite.pl' -- xxxxxxxxxxxx..HEAD
 
 Please note, 'git filter-branch' is a dangerous command, we'd better to backup the repo before run this command, otherwise the repo may be corrupted.
