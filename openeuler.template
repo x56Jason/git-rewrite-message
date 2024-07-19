@@ -40,7 +40,8 @@ $my_signoff="[ $my_username: amend commit log ]\nSigned-off-by: $my_username <$m
 
 # --------------------- template ---------------------
 
-$template = "$title
+$template = <<"END_TEMPLATE";
+$title
 
 mainline inclusion
 from mainline-$tag
@@ -58,4 +59,6 @@ $body
 Intel-SIG: commit $upstream_commit_short $title
 
 $trailers
-$my_signoff";
+$my_signoff
+END_TEMPLATE
+
