@@ -24,6 +24,7 @@ static const char *builtin_prefixes[] = {
 	"Co-developed-by: ",
 	"Co-authored-by: ",
 	"Suggested-by: ",
+	"Inspired-by",
 	"Reported-and-tested-by: ",
 	"(cherry picked from commit ",
 	NULL
