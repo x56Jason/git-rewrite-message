@@ -138,8 +138,6 @@ static size_t find_trailer_block_start(const char *buf, size_t body_start, size_
 			if (recognized_prefix &&
 			    trailer_lines * 3 >= non_trailer_lines)
 				return paragraph_start - buf;
-			else if (trailer_lines && !non_trailer_lines)
-				return paragraph_start - buf;
 
 			only_spaces = 1;
 			recognized_prefix = 0;
