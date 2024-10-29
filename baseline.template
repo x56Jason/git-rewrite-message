@@ -24,7 +24,7 @@ $upstream_commit_short = substr($upstream_commit, 0, 12);
 
 $my_username = run_cmd("git config user.name");
 $my_email = run_cmd("git config user.email");
-$my_signoff="[ $my_username: amend commit log ]\nSigned-off-by: $my_username <$my_email>";
+$my_signoff="Signed-off-by: $my_username <$my_email>";
 
 
 # -------------------------- template -----------------------
