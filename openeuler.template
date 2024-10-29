@@ -17,7 +17,7 @@ $trailers = run_cmd("git-message --trailer $commit_message_file");
 
 $title0 = (split /\n/, $title)[0];
 $title0 =~ s/'/'"'"'/g;
-$hash = run_cmd("git rev-list --no-merges -F --grep=\'$title0\' -n 1 origin/master");
+$hash = run_cmd("git rev-list --no-merges -P --grep=\'^\\Q$title0\\E\' -n 1 origin/master");
 
 $upstream_commit = run_cmd("git rev-parse --short=40 $hash");
 $upstream_commit_short = substr($upstream_commit, 0, 12);
