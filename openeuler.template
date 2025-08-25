@@ -1,41 +1,20 @@
 #!/bin/perl
 
-sub run_cmd {
-	my ($command) = @_;
-
-	my $cmd_output = `$command 2>/dev/null`;
-	do { $count = chomp $cmd_output;} while ($count > 0);
-
-	return $cmd_output;
-}
-
-$commit_message_file = $ENV{"GIT_COMMIT"};
-
-$title = run_cmd("git-message --title $commit_message_file");
-$body = run_cmd("git-message --body $commit_message_file");
-$trailers = run_cmd("git-message --trailer $commit_message_file");
-
-$title0 = (split /\n/, $title)[0];
-$title0 =~ s/'/'"'"'/g;
-$hash = run_cmd("git rev-list --no-merges -P --grep=\'^\\Q$title0\\E\' -n 1 origin/master");
-
-$upstream_commit = run_cmd("git rev-parse --short=40 $hash");
-$upstream_commit_short = substr($upstream_commit, 0, 12);
-
-$tag = run_cmd("git describe --contains $hash");
-if ($tag ne "") {
-	$tag =~ s/~.+$//;
-} else {
-	$tag = "unknown";
-}
+# variables that are imported from common.template, and can be used in this template:
+#
+#	$title:	The subject of the commit message
+#	$body:	The body of the commit message
+#	$trailers: The trailers of the commit message
+#	$upstream_commit: The commit hash of this commit
+#	$upstream_commit_short: The short commit hash of this commit
+#	$upstream_commit_tag: The upstream tag that contains this commit
+#	$my_username: The user name that can be used in signoff
+#	$my_email: The email address that can be used in signoff
+#	$my_signoff: The signoff that want to use
+#
 
 $bugzilla = "https://gitee.com/openeuler/issues/BBBBBB";
 $reference = "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=$upstream_commit";
-
-$my_username = run_cmd("git config user.name");
-$my_email = run_cmd("git config user.email");
-$my_signoff="Signed-off-by: $my_username <$my_email>";
-
 
 
 # --------------------- template ---------------------
@@ -44,7 +23,7 @@ $template = <<"END_TEMPLATE";
 $title
 
 mainline inclusion
-from mainline-$tag
+from mainline-$upstream_tag
 commit $upstream_commit
 category: feature
 bugzilla: $bugzilla

@@ -1,0 +1,41 @@
+#!/bin/perl
+
+sub run_cmd {
+	my ($command) = @_;
+
+	my $cmd_output = `$command 2>/dev/null`;
+	do { $count = chomp $cmd_output;} while ($count > 0);
+
+	return $cmd_output;
+}
+
+$template_name = $ENV{GIT_MSG_TEMPLATE};
+
+$commit_message_file = $ENV{"GIT_COMMIT"};
+
+$title = run_cmd("git-message --title $commit_message_file");
+$body = run_cmd("git-message --body $commit_message_file");
+$trailers = run_cmd("git-message --trailer $commit_message_file");
+
+$title0 = (split /\n/, $title)[0];
+$title0 =~ s/'/'"'"'/g;
+$hash = run_cmd("git rev-list --no-merges -P --grep=\'^\\Q$title0\\E\' -n 1 origin/master");
+
+$upstream_commit = run_cmd("git rev-parse --short=40 $hash");
+$upstream_commit_short = substr($upstream_commit, 0, 12);
+
+if ($template_name eq "openeuler") {
+	$upstream_tag = run_cmd("git describe --contains $hash");
+	if ($upstream_tag ne "") {
+		$upstream_tag =~ s/~.+$//;
+	} else {
+		$upstream_tag = "tag-not-found";
+	}
+} else {
+	$upstream_tag = "tag-to-find";
+}
+
+$my_username = run_cmd("git config user.name");
+$my_email = run_cmd("git config user.email");
+$my_signoff="Signed-off-by: $my_username <$my_email>";
+
