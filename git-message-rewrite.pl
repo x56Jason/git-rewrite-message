@@ -2,7 +2,7 @@
 
 $ENV{PATH} = "$ENV{HOME}/bin:$ENV{PATH}";
 
-$template_path = "$ENV{HOME}" . "/.config/git-message";
+$template_path = "$ENV{HOME}" . "/.config/git-rewrite-message";
 
 sub read_file {
 	my ($filename) = @_;
