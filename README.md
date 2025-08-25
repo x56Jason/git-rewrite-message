@@ -1,34 +1,38 @@
-# Rewrite Commit Message
+# Rewrite Git Commit Messages Using git-filter-branch
+
+## Description
+
+Sometimes you need to rewrite git commit messages in batch by a specific format.
+
+This is a set of script/binary/template to help rewrite git commit messages.
+
+You can define your template to meet your rewriting requirements.
 
 ## Install
 
     $ make
     $ make install
 
-It will install 'git-message' and 'git-message-rewrite.pl' into ~/bin/, and template files into ~/.config/git-message/.
+It will install 'git-message', 'git-message-rewrite.pl' and 'git-rewrite-message.sh" into ~/bin/. Please add ~/bin to your PATH.
+
+It also installs template files into ~/.config/git-rewrite-message/.
 
 ## Usage
 
-### 1. Edit template
+### 1. Edit or add template
 
-First we need to choose a template, and edit corresponding template file in ~/.config/git-message/.
+First you need to choose a template, and edit corresponding template file in ~/.config/git-rewrite-message/.
 
-Currently we support 2 templates: baseline, openeuler.
+Currently 2 templates are supported: baseline, openeuler. You can edit baseline.template or openeuler.template accordingly.
 
-So we need to edit baseline.template or openeuler.template accordingly.
+Meanwhile, you can also write your own template. Refer to existing templates for how to create a new template.
 
-### 2. Set template environment variable
+### 2. Run git-rewrite-message.sh
 
-Before rewrite commit messages, we need to set following template environment variable.
+    $ git-rewrite-message.sh -t <template-name> <start-commit>
 
-    $ export GIT_MSG_TEMPLATE=baseline
+    template-name: baseline or openeuler
 
-or
+Please note, the commits that will be rewritten must be from \<start-commit\> to HEAD, because this script uses 'git filter-branch' to rewrite commit messages, while 'git filter-branch' requires to use current branch.
 
-    $ export GIT_MSG_TEMPLATE=openeuler
-
-### 3. Rewrite commit message according to template
-
-    $ git filter-branch -f --msg-filter 'git-message-rewrite.pl' -- xxxxxxxxxxxx..HEAD
-
-Please note, 'git filter-branch' is a dangerous command, we'd better to backup the repo before run this command, otherwise the repo may be corrupted.
+DANGER: This script uses 'git filter-branch' to rewrite commit messages. 'git filter-branch' is a dangerous command, you'd better to backup the repo before run this command, otherwise the repo may be corrupted.
